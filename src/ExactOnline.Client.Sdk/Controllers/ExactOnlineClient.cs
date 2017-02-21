@@ -71,7 +71,7 @@ namespace ExactOnline.Client.Sdk.Controllers
 		/// return the division number of the current user
 		/// </summary>
 		/// <returns>Division number</returns>
-		public int GetDivision()
+		public virtual int GetDivision()
 		{
 			if (_division > 0)
 			{
