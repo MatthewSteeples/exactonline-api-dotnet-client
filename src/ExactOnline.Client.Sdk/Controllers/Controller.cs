@@ -156,10 +156,12 @@ namespace ExactOnline.Client.Sdk.Controllers
 					throw new Exception("This entity already exists");
 				}
 
-				// Get entity with linked entities (API Response for creating does not return the linked entities)
-				entity = GetEntity(GetIdentifierValue(entity), _expandfield);
-			}
-			return created;
+                /* IGNORE the additional GET request until it is resolved properly by the API team (https://github.com/exactonline/exactonline-api-dotnet-client/issues/9)
+                // Get entity with linked entities (API Response for creating does not return the linked entities)
+                entity = GetEntity(GetIdentifierValue(entity), _expandfield);
+                */
+            }
+            return created;
 		}
 
 		private Boolean IsUpdateable(T entity)
