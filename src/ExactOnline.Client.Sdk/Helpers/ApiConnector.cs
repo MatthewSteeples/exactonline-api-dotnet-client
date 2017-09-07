@@ -148,6 +148,7 @@ namespace ExactOnline.Client.Sdk.Helpers
 		{
 			var request = (HttpWebRequest)WebRequest.Create(uri);
 			request.Method = RequestTypeEnum.GET.ToString();
+            request.Timeout = defaultTimeout;
 			request.ContentType = "application/json";
 			request.Headers.Add("Authorization", "Bearer " + _accessTokenDelegate());
 			return GetResponse(request);
@@ -165,9 +166,11 @@ namespace ExactOnline.Client.Sdk.Helpers
 			return (int)jsonObject.d["results"][0]["CurrentDivision"].Value;
 		}
 
-		#endregion
+        #endregion
 
-		#region Private methods
+        #region Private methods
+
+        static readonly int defaultTimeout = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
 
 		private HttpWebRequest CreateRequest(string url, string oDataQuery, RequestTypeEnum method, string acceptContentType = "application/json")
 		{
@@ -178,6 +181,7 @@ namespace ExactOnline.Client.Sdk.Helpers
 
 			var request = (HttpWebRequest)WebRequest.Create(url);
 			request.Method = method.ToString();
+            request.Timeout = defaultTimeout;
 			request.ContentType = "application/json";
 			if (!string.IsNullOrEmpty(acceptContentType))
 			{
