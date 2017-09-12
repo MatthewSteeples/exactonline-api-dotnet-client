@@ -203,43 +203,48 @@ namespace ExactOnline.Client.Sdk.Helpers
 			try
 			{
 				WebResponse response = request.GetResponse();
-				using (Stream responseStream = response.GetResponseStream())
-				{
-					if (responseStream != null)
-					{
-						var reader = new StreamReader(responseStream);
-						responseValue = reader.ReadToEnd();
-					}
-				}
+                if (response != null)
+                {
+                    using (Stream responseStream = response.GetResponseStream())
+                    {
+                        if (responseStream != null)
+                        {
+                            var reader = new StreamReader(responseStream);
+                            responseValue = reader.ReadToEnd();
+                        }
+                    }
+                }
 			}
 			catch (WebException ex)
 			{
-				var statusCode = (((HttpWebResponse)ex.Response).StatusCode);
-				Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
+                if (ex.Response != null)
+                {
+                    var statusCode = (((HttpWebResponse)ex.Response).StatusCode);
 
-				var messageFromServer = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
-				Debug.WriteLine(messageFromServer);
-				Debug.WriteLine("");
+                    var messageFromServer = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                    Debug.WriteLine(messageFromServer);
+                    Debug.WriteLine("");
 
-				switch (statusCode)
-				{
-					case HttpStatusCode.BadRequest: // 400
-					case HttpStatusCode.MethodNotAllowed: // 405
-						throw new BadRequestException(ex.Message, ex);
+                    switch (statusCode)
+                    {
+                        case HttpStatusCode.BadRequest: // 400
+                        case HttpStatusCode.MethodNotAllowed: // 405
+                            throw new BadRequestException(ex.Message, ex);
 
-					case HttpStatusCode.Unauthorized: //401
-						throw new UnauthorizedException(ex.Message, ex); // 401
+                        case HttpStatusCode.Unauthorized: //401
+                            throw new UnauthorizedException(ex.Message, ex); // 401
 
-					case HttpStatusCode.Forbidden:
-						throw new ForbiddenException(ex.Message, ex); // 403
+                        case HttpStatusCode.Forbidden:
+                            throw new ForbiddenException(ex.Message, ex); // 403
 
-					case HttpStatusCode.NotFound:
-						throw new NotFoundException(ex.Message, ex); // 404
+                        case HttpStatusCode.NotFound:
+                            throw new NotFoundException(ex.Message, ex); // 404
 
-					case HttpStatusCode.InternalServerError: // 500
-						throw new InternalServerErrorException(messageFromServer, ex);
-				}
-
+                        case HttpStatusCode.InternalServerError: // 500
+                            throw new InternalServerErrorException(messageFromServer, ex);
+                    }
+                }
 				throw;
 			}
 
